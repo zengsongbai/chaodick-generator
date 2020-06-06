@@ -91,6 +91,53 @@ AdMoveConfig.Scroll = function() {
 }
 addEvent(window, "resize", AdMoveConfig.Resize);
 addEvent(window, "scroll", AdMoveConfig.Scroll);
+var draggingObj=null;
+var diffX=0;
+var diffY=0;
+var temp=null;
+function dragging(obj) {
+	temp = obj;
+	obj.style.position='fixed';
+	document.addEventListener("mousedown", mouseDown);
+	document.addEventListener("mousemove", mouseMove);
+	document.addEventListener("mouseup", mouseUp);
+}
+function getDraggingDialog(e){
+	var target=e.target;
+	while (target != undefined && target != null && target.tagName.toUpperCase() != 'BODY'){ 
+	if (target == temp){ 
+		return true; 
+	} 
+		target = target.parentNode; 
+	} 
+	return false; 
+}
+
+function mouseDown(e) 
+{
+	if(getDraggingDialog(e)){
+		draggingObj = temp;
+	};
+	
+	if(draggingObj!=null){
+		diffX=e.clientX-draggingObj.offsetLeft;
+		diffY=e.clientY-draggingObj.offsetTop;
+	}
+				
+}
+function mouseMove(e) 
+{
+	if(draggingObj){
+		draggingObj.style.left=(e.clientX-diffX)+'px';
+		draggingObj.style.top=(e.clientY-diffY)+'px';
+	}
+}
+function mouseUp() 
+{
+	draggingObj =null;
+	diffX=0;
+	diffY=0;
+}
 
 function AdMove(id) {
 	if(!AdMoveConfig.IsInitialized) {
@@ -126,33 +173,33 @@ function AdMove(id) {
 		H = AdMoveConfig.MoveHeight - obj.offsetHeight;
 		x = x + step * kx * dirx;
 		if(x < 0) {
-			dirx = 1;
+			dirx = Math.random()*( 5 - 3 ) + 3;
 			x = 0;
 			kx = Math.sin(rad);
 			ky = Math.cos(rad);
 		}
 		if(x > W) {
-			dirx = -1;
+			dirx = -Math.random()*( 5 - 3 ) - 3;
 			x = W;
 			kx = Math.sin(rad);
 			ky = Math.cos(rad);
 		}
 		y = y + step * ky * diry;
 		if(y < 0) {
-			diry = 1;
+			diry = Math.random()*( 5 - 3 ) + 3;
 			y = 0;
 			kx = Math.sin(rad);
 			ky = Math.cos(rad);
 		}
 		if(y > H) {
-			diry = -1;
+			diry = -Math.random()*( 5 - 3 ) - 3;
 			y = H;
 			kx = Math.sin(rad);
 			ky = Math.cos(rad);
 		}
 	}
 	this.Run = function() {
-		var delay = 10;
+		var delay = 1;
 		interval = setInterval(obj.CustomMethod, delay);
 		obj.onmouseover = function() {
 			clearInterval(interval);
